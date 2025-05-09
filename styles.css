@@ -182,3 +182,11 @@ body {
   position: absolute;
   bottom: 5px;
 }
+
+#sleep-content ul li {
+  transition: color 0.2s ease;
+}
+
+#sleep-content ul li:hover {
+  color: #1db954;
+}
