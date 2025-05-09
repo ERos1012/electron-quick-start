@@ -15,7 +15,14 @@
           <p class="artist-name">Artist name</p>
 
       <!--For Audio Controls-->
-      <input type="range" value="0" id="progress-bar">
+      <div class="progress-container">
+          <input type="range" id="progress-bar" value="0" min="0" max="100">
+          <div class="time-info">
+            <span id="current-time">0:00</span>
+            <span id="total-time">0:00</span>
+          </div>
+      </div>
+
       <div class="controls">
           <button id="prev" class="control-btn"><img src="icons/prev.svg" alt="Previous"></button>
           <button id="play-pause" class="control-btn"><img src="icons/play.svg" alt="Play/Pause"></button>
