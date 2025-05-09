@@ -1,34 +1,78 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://eros1012.github.io; img-src 'self' https://eros1012.github.io; media-src 'self' https://eros1012.github.io; script-src 'self';">
-    <link href="./styles.css" rel="stylesheet">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; connect-src 'self' https://eros1012.github.io; img-src 'self' https://eros1012.github.io; media-src 'self' https://eros1012.github.io; script-src 'self';"
+    />
+    <link href="./styles.css" rel="stylesheet" />
     <title>Music Player</title>
   </head>
   <body>
     <div class="container">
       <div class="music-player">
-          <img src="thumbnails/IMG_9624.JPEG" class="song-img">
-          <h1 class="song-name">Song name</h1>
-          <p class="artist-name">Artist name</p>
+        <img src="thumbnails/IMG_9624.JPEG" class="song-img" />
+        <h1 class="song-name">Song name</h1>
+        <p class="artist-name">Artist name</p>
 
-      <!--For Audio Controls-->
-      <div class="progress-container">
-          <input type="range" id="progress-bar" value="0" min="0" max="100">
+        <!--For Audio Controls-->
+        <div class="progress-container">
+          <input type="range" id="progress-bar" value="0" min="0" max="100" />
           <div class="time-info">
             <span id="current-time">0:00</span>
             <span id="total-time">0:00</span>
           </div>
-      </div>
+        </div>
 
-      <div class="controls">
-          <button id="prev" class="control-btn"><img src="icons/prev.svg" alt="Previous"></button>
-          <button id="play-pause" class="control-btn"><img src="icons/play.svg" alt="Play/Pause"></button>
-          <button id="next" class="control-btn"><img src="icons/next.svg" alt="Next"></button>
+        <div class="controls">
+          <div class="sleep-timer-container">
+            <button id="sleep-timer" class="control-btn">
+              <img src="icons/timer.svg" alt="Timer" />
+            </button>
+            <span id="sleep-timer-text"></span>
+          </div>
+          <button id="prev" class="control-btn">
+            <img src="icons/prev.svg" alt="Previous" />
+          </button>
+          <button id="play-pause" class="control-btn">
+            <img src="icons/play.svg" alt="Play/Pause" />
+          </button>
+          <button id="next" class="control-btn">
+            <img src="icons/next.svg" alt="Next" />
+          </button>
+          <button id="queue" class="control-btn">
+            <img src="icons/menu.svg" alt="Queue" />
+          </button>
+        </div>
+
+        <div id="bottom-menu" class="bottom-menu hidden">
+          <button id="close-menu" class="control-btn">
+            <img src="icons/close.svg" alt="Close" />
+          </button>
+          <div id="sleep-content" class="menu-section hidden">
+            <p>Stop playing after:</p>
+            <ul>
+              <li data-minutes="5">5 minutes</li>
+              <li data-minutes="10">10 minutes</li>
+              <li data-minutes="15">15 minutes</li>
+              <li data-minutes="30">30 minutes</li>
+              <li data-minutes="45">45 minutes</li>
+              <li data-minutes="60">1 hour</li>
+              <li data-minutes="cancel">Cancel Timer</li>
+            </ul>
+          </div>
+
+          <div id="queue-content" class="menu-section hidden">
+            <p>Up Next:</p>
+            <ul id="queue-list">
+              <!-- Dynamically populated -->
+            </ul>
+          </div>
+        </div>
       </div>
-</div>
+    </div>
 
     <!-- You can also require other files to run in this process -->
     <script src="./renderer.js"></script>

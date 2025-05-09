@@ -5,7 +5,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
@@ -28,8 +28,9 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
 }
-
 
 .music-player {
   display: flex;
@@ -56,7 +57,6 @@ body {
   -webkit-box-orient: vertical;
   margin-bottom: 5px;
 }
-
 
 .artist-name {
   font-size: 0.9rem;
@@ -112,14 +112,14 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 80%;
+  width: 100%;
 }
 
 .control-btn {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 10px;
+  padding: 15px;
   transition: transform 0.2s ease;
 }
 
@@ -131,4 +131,54 @@ body {
 
 .control-btn:hover {
   transform: scale(1.2);
+}
+
+.bottom-menu {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: #1c1c1c;
+  color: white;
+  padding: 1em;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 10;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+  border-top: 1px solid #333;
+}
+
+.hidden {
+  display: none;
+}
+
+.menu-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-section li {
+  padding: 0.5em 0;
+  border-bottom: 1px solid #333;
+  cursor: pointer;
+}
+
+#close-menu {
+  border: none;
+  padding: 0px;
+  padding-bottom: 5px;
+}
+
+.sleep-timer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#sleep-timer-text {
+  font-size: 12px;
+  color: #aaa;
+  position: absolute;
+  bottom: 5px;
 }

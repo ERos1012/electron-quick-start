@@ -1,10 +1,27 @@
 // renderer.js
 
-let audio;
-let playPauseBtn, prevBtn, nextBtn, progressBar;
-let songName, artistName, songImg;
-let currentTimeEl, totalTimeEl;
+let audio,
+  playPauseBtn,
+  prevBtn,
+  nextBtn,
+  progressBar,
+  cancelBtn,
+  sleepBtn,
+  queueBtn,
+  bottomMenu,
+  sleepContent,
+  queueContent,
+  queueList,
+  songName,
+  artistName,
+  songImg,
+  currentTimeEl,
+  totalTimeEl,
+  sleepTimerText;
 
+let sleepTimeout = null;
+let sleepInterval = null;
+let sleepEndTime = null;
 let songs = [];
 let songIndex = 0;
 let isPlaying = false;
@@ -20,21 +37,28 @@ window.addEventListener("DOMContentLoaded", async () => {
   songImg = document.querySelector(".song-img");
   currentTimeEl = document.getElementById("current-time");
   totalTimeEl = document.getElementById("total-time");
-
+  sleepBtn = document.getElementById("sleep-timer");
+  queueBtn = document.getElementById("queue");
+  bottomMenu = document.getElementById("bottom-menu");
+  sleepContent = document.getElementById("sleep-content");
+  queueContent = document.getElementById("queue-content");
+  queueList = document.getElementById("queue-list");
+  cancelBtn = document.getElementById("close-menu");
+  sleepTimerText = document.getElementById("sleep-timer-text");
 
   // Create and insert audio element
   audio = new Audio();
   document.body.appendChild(audio);
 
   // Fetch songs
-fetch('https://eros1012.github.io/music-assets/songs.json')
-  .then(response => response.json())
-  .then(data => {
-    songs = data;
-    loadSong(songs[songIndex]);
-    setupEventListeners();
-  })
-  .catch(err => console.error("Failed to load songs:", err));
+  fetch("https://eros1012.github.io/music-assets/songs.json")
+    .then((response) => response.json())
+    .then((data) => {
+      songs = data;
+      loadSong(songs[songIndex]);
+      setupEventListeners();
+    })
+    .catch((err) => console.error("Failed to load songs:", err));
 });
 
 function loadSong(song) {
@@ -43,11 +67,10 @@ function loadSong(song) {
   audio.src = song.src;
   songImg.src = song.image;
 
-  audio.addEventListener('loadedmetadata', () => {
+  audio.addEventListener("loadedmetadata", () => {
     totalTimeEl.textContent = formatTime(audio.duration);
   });
 }
-
 
 function playSong() {
   audio.play();
@@ -88,10 +111,11 @@ function updateProgressBar() {
 
 function formatTime(time) {
   const minutes = Math.floor(time / 60);
-  const seconds = Math.floor(time % 60).toString().padStart(2, '0');
+  const seconds = Math.floor(time % 60)
+    .toString()
+    .padStart(2, "0");
   return `${minutes}:${seconds}`;
 }
-
 
 function seekAudio(e) {
   const value = e.target.value;
@@ -105,4 +129,118 @@ function setupEventListeners() {
   progressBar.addEventListener("input", seekAudio);
   audio.addEventListener("timeupdate", updateProgressBar);
   audio.addEventListener("ended", playNext);
+  playPauseBtn.addEventListener("click", togglePlayPause);
+  prevBtn.addEventListener("click", playPrev);
+  nextBtn.addEventListener("click", playNext);
+  progressBar.addEventListener("input", seekAudio);
+  audio.addEventListener("timeupdate", updateProgressBar);
+  audio.addEventListener("ended", playNext);
+
+  sleepBtn.addEventListener("click", () => {
+    toggleBottomMenu("sleep");
+  });
+
+  queueBtn.addEventListener("click", () => {
+    populateQueue();
+    toggleBottomMenu("queue");
+  });
+
+  // Handle clicks in sleep menu
+  sleepContent.addEventListener("click", handleSleepMenuClick);
+
+  // Hide the menu when clicking cancel button
+  cancelBtn.addEventListener("click", () => {
+    bottomMenu.classList.add("hidden");
+    sleepContent.classList.add("hidden");
+    queueContent.classList.add("hidden");
+  });
+}
+
+function toggleBottomMenu(type) {
+  const isAlreadyVisible = !bottomMenu.classList.contains("hidden");
+
+  // If already visible and clicking same button, close it
+  if (
+    isAlreadyVisible &&
+    ((type === "sleep" && !sleepContent.classList.contains("hidden")) ||
+      (type === "queue" && !queueContent.classList.contains("hidden")))
+  ) {
+    bottomMenu.classList.add("hidden");
+    sleepContent.classList.add("hidden");
+    queueContent.classList.add("hidden");
+    return;
+  }
+
+  // Show the appropriate content
+  bottomMenu.classList.remove("hidden");
+  sleepContent.classList.toggle("hidden", type !== "sleep");
+  queueContent.classList.toggle("hidden", type !== "queue");
+}
+
+function handleSleepMenuClick(e) {
+  const target = e.target.closest("li");
+  if (!target) return;
+
+  const value = target.getAttribute("data-minutes");
+
+  if (value === "cancel") {
+  cancelSleepTimer();
+} else {
+  const minutes = parseInt(value);
+  setSleepTimer(minutes);
+}
+  bottomMenu.classList.add("hidden");
+  sleepContent.classList.add("hidden");
+}
+
+function populateQueue() {
+  queueList.innerHTML = "";
+  for (let i = songIndex + 1; i < songs.length; i++) {
+    const li = document.createElement("li");
+    li.textContent = `${songs[i].name} – ${songs[i].artist}`;
+    queueList.appendChild(li);
+  }
+}
+
+function setSleepTimer(minutes) {
+  if (sleepTimeout) clearTimeout(sleepTimeout);
+  if (sleepInterval) clearInterval(sleepInterval);
+
+  const durationMs = minutes * 60 * 1000;
+  sleepEndTime = Date.now() + durationMs;
+
+  sleepTimeout = setTimeout(() => {
+    audio.pause();
+    clearInterval(sleepInterval);
+    sleepTimerText.textContent = "";
+    sleepTimeout = null;
+    sleepInterval = null;
+    sleepEndTime = null;
+  }, durationMs);
+
+  sleepInterval = setInterval(() => {
+    const remaining = sleepEndTime - Date.now();
+    if (remaining <= 0) {
+      sleepTimerText.textContent = "";
+      clearInterval(sleepInterval);
+      sleepInterval = null;
+      return;
+    }
+    const mins = Math.floor(remaining / 60000);
+    const secs = Math.floor((remaining % 60000) / 1000)
+      .toString()
+      .padStart(2, "0");
+    sleepTimerText.textContent = `${mins}:${secs}`;
+  }, 1000);
+}
+
+function cancelSleepTimer() {
+  if (sleepTimeout) {
+    clearTimeout(sleepTimeout);
+    clearInterval(sleepInterval);
+    sleepTimeout = null;
+    sleepInterval = null;
+    sleepEndTime = null;
+    sleepTimerText.textContent = "";
+  }
 }
