@@ -3,15 +3,25 @@
   <head>
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
+     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://eros1012.github.io; img-src 'self' https://eros1012.github.io; media-src 'self' https://eros1012.github.io; script-src 'self';">
     <link href="./styles.css" rel="stylesheet">
-    <title>Hello World!</title>
+    <title>Music Player</title>
   </head>
   <body>
-    <h1>Hello World!</h1>
-    We are using Node.js <span id="node-version"></span>,
-    Chromium <span id="chrome-version"></span>,
-    and Electron <span id="electron-version"></span>.
+    <div class="container">
+      <div class="music-player">
+          <img src="thumbnails/IMG_9624.JPEG" class="song-img">
+          <h1 class="song-name">Song name</h1>
+          <p class="artist-name">Artist name</p>
+
+      <!--For Audio Controls-->
+      <input type="range" value="0" id="progress-bar">
+      <div class="controls">
+          <button id="prev" class="control-btn"><img src="icons/prev.svg" alt="Previous"></button>
+          <button id="play-pause" class="control-btn"><img src="icons/play.svg" alt="Play/Pause"></button>
+          <button id="next" class="control-btn"><img src="icons/next.svg" alt="Next"></button>
+      </div>
+</div>
 
     <!-- You can also require other files to run in this process -->
     <script src="./renderer.js"></script>
