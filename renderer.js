@@ -54,7 +54,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   fetch("https://eros1012.github.io/music-assets/songs.json")
     .then((response) => response.json())
     .then((data) => {
-      songs = data;
+      songs = shuffle(data);
       loadSong(songs[songIndex]);
       setupEventListeners();
     })
@@ -70,6 +70,15 @@ function loadSong(song) {
   audio.addEventListener("loadedmetadata", () => {
     totalTimeEl.textContent = formatTime(audio.duration);
   });
+}
+
+// Shuffle function to randomize the song order
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+  }
+  return array;
 }
 
 function playSong() {
@@ -91,13 +100,13 @@ function togglePlayPause() {
 }
 
 function playNext() {
-  songIndex = (songIndex + 1) % songs.length;
+  songIndex = (songIndex + 1) % songs.length; // Continue looping through the shuffled list
   loadSong(songs[songIndex]);
   playSong();
 }
 
 function playPrev() {
-  songIndex = (songIndex - 1 + songs.length) % songs.length;
+  songIndex = (songIndex - 1 + songs.length) % songs.length; // Loop back to the last song if at the start
   loadSong(songs[songIndex]);
   playSong();
 }
@@ -184,23 +193,34 @@ function handleSleepMenuClick(e) {
   const value = target.getAttribute("data-minutes");
 
   if (value === "cancel") {
-  cancelSleepTimer();
-} else {
-  const minutes = parseInt(value);
-  setSleepTimer(minutes);
-}
+    cancelSleepTimer();
+  } else {
+    const minutes = parseInt(value);
+    setSleepTimer(minutes);
+  }
   bottomMenu.classList.add("hidden");
   sleepContent.classList.add("hidden");
 }
 
 function populateQueue() {
-  queueList.innerHTML = "";
+  queueList.innerHTML = ""; // Clear existing queue
+
+  // Start from the song after the current one
   for (let i = songIndex + 1; i < songs.length; i++) {
     const li = document.createElement("li");
     li.textContent = `${songs[i].name} – ${songs[i].artist}`;
+    
+    // Add click event listener to each queue item
+    li.addEventListener("click", () => {
+      songIndex = i; // Update songIndex to the clicked song
+      loadSong(songs[songIndex]); // Load the song
+      playSong(); // Start playing the song
+    });
+
     queueList.appendChild(li);
   }
 }
+
 
 function setSleepTimer(minutes) {
   if (sleepTimeout) clearTimeout(sleepTimeout);

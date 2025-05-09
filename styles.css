@@ -145,6 +145,7 @@ body {
   z-index: 10;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
   border-top: 1px solid #333;
+  height: 370px;
 }
 
 .hidden {
@@ -188,5 +189,20 @@ body {
 }
 
 #sleep-content ul li:hover {
+  color: #1db954;
+}
+
+#queue-content-text {
+  font-size: 12px;
+  color: #aaa;
+  position: absolute;
+  bottom: 5px;
+}
+
+#queue-content ul li {
+  transition: color 0.2s ease;
+}
+
+#queue-content ul li:hover {
   color: #1db954;
 }
