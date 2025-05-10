@@ -218,3 +218,29 @@ body {
   margin-left: 10px;
   filter: brightness(0) saturate(100%) invert(100%);
 }
+
+/* iPads and tablets (portrait and landscape) */
+@media (min-width: 601px) and (max-width: 1024px) {
+  button,
+  #queue-list li,
+  .sleep-options li {
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+
+  /* Desktop hover */
+  button:hover,
+  #queue-list li:hover,
+  .sleep-options li:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.03);
+    cursor: pointer;
+  }
+
+  /* Mobile active state */
+  button:active,
+  #queue-list li:active,
+  .sleep-options li:active {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(0.98);
+  }
+}
