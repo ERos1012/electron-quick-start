@@ -86,14 +86,18 @@ function playSong() {
   isPlaying = true;
   playPauseBtn.querySelector("img").src = "icons/pause.svg";
   playPauseBtn.querySelector("img").alt = "Pause";
+  populateQueue(); // update queue UI with icon
 }
+
 
 function pauseSong() {
   audio.pause();
   isPlaying = false;
   playPauseBtn.querySelector("img").src = "icons/play.svg";
   playPauseBtn.querySelector("img").alt = "Play";
+  populateQueue(); 
 }
+
 
 function togglePlayPause() {
   isPlaying ? pauseSong() : playSong();
@@ -203,23 +207,32 @@ function handleSleepMenuClick(e) {
 }
 
 function populateQueue() {
-  queueList.innerHTML = ""; // Clear existing queue
-
-  // Start from the song after the current one
-  for (let i = songIndex + 1; i < songs.length; i++) {
+  queueList.innerHTML = "";
+  songs.forEach((song, index) => {
     const li = document.createElement("li");
-    li.textContent = `${songs[i].name} – ${songs[i].artist}`;
-    
-    // Add click event listener to each queue item
+    li.textContent = `${song.name} – ${song.artist}`;
+
+    // Highlight the currently playing song
+    if (index === songIndex) {
+      const icon = document.createElement("img");
+      icon.src = "icons/music-note.svg";
+      icon.alt = "Now Playing";
+      icon.classList.add("queue-icon");
+      li.appendChild(icon);
+      li.style.fontWeight = "bold"; // optional: visually highlight the row
+    }
+
     li.addEventListener("click", () => {
-      songIndex = i; // Update songIndex to the clicked song
-      loadSong(songs[songIndex]); // Load the song
-      playSong(); // Start playing the song
+      songIndex = index;
+      loadSong(songs[songIndex]);
+      playSong();
+      populateQueue(); // refresh to update icon position
     });
 
     queueList.appendChild(li);
-  }
+  });
 }
+
 
 
 function setSleepTimer(minutes) {
@@ -264,3 +277,14 @@ function cancelSleepTimer() {
     sleepTimerText.textContent = "";
   }
 }
+
+document.addEventListener("click", (event) => {
+  const isClickInsideMenu = bottomMenu.contains(event.target);
+  const isClickingButton = sleepBtn.contains(event.target) || queueBtn.contains(event.target);
+
+  if (!isClickInsideMenu && !isClickingButton && !bottomMenu.classList.contains("hidden")) {
+    bottomMenu.classList.add("hidden");
+    sleepContent.classList.add("hidden");
+    queueContent.classList.add("hidden");
+  }
+});

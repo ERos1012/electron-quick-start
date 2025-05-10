@@ -206,3 +206,15 @@ body {
 #queue-content ul li:hover {
   color: #1db954;
 }
+
+#queue-list li.current {
+  font-weight: bold;
+  background-color: #f0f0f0;
+  color: #007bff;
+}
+
+.queue-icon {
+  width: 20px;
+  margin-left: 10px;
+  filter: brightness(0) saturate(100%) invert(100%);
+}
