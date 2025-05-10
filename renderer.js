@@ -210,7 +210,7 @@ function populateQueue() {
   queueList.innerHTML = "";
   songs.forEach((song, index) => {
     const li = document.createElement("li");
-    li.textContent = `${song.name} – ${song.artist}`;
+    li.textContent = `${song.name}`;
 
     // Highlight the currently playing song
     if (index === songIndex) {
@@ -232,8 +232,6 @@ function populateQueue() {
     queueList.appendChild(li);
   });
 }
-
-
 
 function setSleepTimer(minutes) {
   if (sleepTimeout) clearTimeout(sleepTimeout);
